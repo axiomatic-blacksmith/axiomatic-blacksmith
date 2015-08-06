@@ -1,21 +1,15 @@
 module.exports = function(app) {
   // import mongoose model for Questions
   var Question = require('./models/Question');
-  var User = require('./models/User');
 
 
   // Express routing service for get and post requests
 
-  // Returns array of objects;
-  // To access name, you'll need to 
-  // access item.name (for item in data)
   app.get('/questions', function(req, res) {
-    var questions = Question.find({})
-      .populate('student')
-      .exec(function(err, data){
-        if(err) throw err;
-        res.send(data);
-      });
+    var questions = Question.find({}, function(err, data){
+      if(err) throw err;
+      res.send(data);
+    });
   })
 
   // questions (NOT answers) are posted via '/questions' route
