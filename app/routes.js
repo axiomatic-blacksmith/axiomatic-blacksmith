@@ -1,4 +1,4 @@
-module.exports = function(app) {
+module.exports = function(app, io) {
   // import mongoose model for Questions
   var Question = require('./models/Question');
   var User = require('./models/User');
@@ -68,4 +68,35 @@ module.exports = function(app) {
       res.send(201,'Success!\n');
     });
   });
+
+  // SOCKET EVENT LISTENERS
+
+  // New client connection
+  io.on('connection', function (socket) {
+  // This code replaces the post request handler
+  // It saves the question to the db but the auto-updating is buggy
+  //   // New question asked
+  //   socket.on('new-question', function (asked) {
+  //     var question = new Question({
+  //       title: asked.title,
+  //       body: asked.body,
+  //       student: asked.student,
+  //       answeredBy: null,
+  //       answer: null
+  //     });
+
+  //     // save the newly created model to Mongoose
+  //     question.save(function(err, data){
+  //       if (err) throw err;
+  //       io.emit('new-question', asked);
+  //     });
+  //   })
+
+    // This version works alongside a post request handler
+    // It merely passes the question along without touching the db
+    socket.on('new-question', function (asked) {
+      io.emit('new-question', asked);
+    });
+  });
 }
+

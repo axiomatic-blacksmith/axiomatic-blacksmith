@@ -24,16 +24,10 @@ app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-M
 app.use(express.static(__dirname + '/public')); // set the static files location /public/img will be /img for users
 
 // routes ==================================================
-require('./app/routes')(app); // pass our application into our routes
+require('./app/routes')(app, io); // pass our application into our routes
 
 // start app ===============================================
 server.listen(port);
-
-io.on('connection', function (socket) {
-  socket.on('new-question', function (data) {
-    io.emit('new-question', data);
-  })
-});
 
 console.log('Magic happens on port ' + port); 			// shoutout to the user
 exports = module.exports = app; 						// expose app
