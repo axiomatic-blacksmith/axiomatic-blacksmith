@@ -1,5 +1,5 @@
 angular.module('StudentClassroomCtrl', [])
-  .controller('StudentClassroomController', function($scope, qandaFactory, questionFormFactory, VideoFactory) {
+  .controller('StudentClassroomController', function($scope, qandaFactory, questionFormFactory, VideoFactory, socketFactory) {
     $scope.data = {};
     $scope.question = '';
 
@@ -14,14 +14,19 @@ angular.module('StudentClassroomCtrl', [])
           $scope.data.questionQueue = questions.filter(function(question) {
             return !question.answer;
           });
+          socketFactory.socket.on('new-question', function (question) {
+            $scope.data.questionQueue.push(question);
+          });
         });
     };
 
     $scope.askQuestion = function() {
-      questionFormFactory.submitQuestion({
+      var data = {
         title: $scope.question,
         body: $scope.question
-      });
+      };
+      socketFactory.socket.emit('new-question', data)
+      questionFormFactory.submitQuestion(data);
       $scope.question = '';
       VideoFactory.play();
     };
@@ -29,6 +34,7 @@ angular.module('StudentClassroomCtrl', [])
     $scope.pause = VideoFactory.pause
 
     $scope.getQandA();
+ 
     return $scope;
 
   });

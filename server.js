@@ -1,9 +1,11 @@
 // modules =================================================
 var express        = require('express');
 var app            = express();
+var server         = require('http').Server(app);
 var mongoose       = require('mongoose');
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
+var io             = require('socket.io')(server);
 
 // configuration ===========================================
 	
@@ -22,9 +24,10 @@ app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-M
 app.use(express.static(__dirname + '/public')); // set the static files location /public/img will be /img for users
 
 // routes ==================================================
-require('./app/routes')(app); // pass our application into our routes
+require('./app/routes')(app, io); // pass our application into our routes
 
 // start app ===============================================
-app.listen(port);	
+server.listen(port);
+
 console.log('Magic happens on port ' + port); 			// shoutout to the user
 exports = module.exports = app; 						// expose app
