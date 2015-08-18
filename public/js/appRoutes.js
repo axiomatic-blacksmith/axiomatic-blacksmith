@@ -84,7 +84,7 @@ angular.module('appRoutes', [])
       }
     }
   })
-  .directive('queue', function (VideoFactory) {
+  .directive('queue', function (VideoFactory, CurrentQuestionFactory) {
     return {
       scope: {
         questions: '='
@@ -95,6 +95,13 @@ angular.module('appRoutes', [])
         $scope.goTo = function (seconds) {
           VideoFactory.goTo(seconds);
         };
+        $scope.current = function(question){
+          CurrentQuestionFactory.currentQuestion(question);
+          CurrentQuestionFactory.show();
+          console.log('final current: ');
+          console.log(CurrentQuestionFactory.currentQuestion);
+          console.log(CurrentQuestionFactory.show);
+        }
       }
     }
   })
