@@ -12,7 +12,7 @@
                    <img class="media-object img-circle " src="img/user.png" style = "width:30px" />
                 </a>
                   <div class="media-body">
-                        {{question.title}} @ <span class="timestamp" ng-click="goTo(question.askQTime)">{{question.askQTime | secondsToDateTime | date:'mm:ss'}}</span>
+                        <span ng-click='current(question)'>{{question.title}}</span> @ <span class="timestamp" ng-click="goTo(question.askQTime)">{{question.askQTime | secondsToDateTime | date:'mm:ss'}}</span>
                       <br />
                       <small class="text-muted">{{question.student.name}} | {{ question.created_at }}</small>
                   </div>

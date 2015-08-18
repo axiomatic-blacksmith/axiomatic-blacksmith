@@ -1,4 +1,16 @@
 angular.module('TeacherClassroomCtrl', [])
+
+  .factory('CurrentQuestionFactory', function($rootScope){
+    var currentQ = null;
+    $rootScope.show = false;
+    $rootScope.currentQuestion = null; 
+
+    return {
+      currentQuestion : function(question) {$rootScope.currentQuestion = question},
+      show : function(){$rootScope.show = true},
+      hide: function(){$rootScope.show = false}
+    }
+  })
   .controller('TeacherClassroomController', function($scope, qandaFactory, VideoFactory, socketFactory) {
     $scope.data = {};
     $scope.tagline = 'Welcome to the classroom!';
@@ -41,14 +53,19 @@ angular.module('TeacherClassroomCtrl', [])
   })
 
 
-  .controller('TeacherAnswerController', function($scope, $http, $window, VideoFactory, socketFactory){
+  .controller('TeacherAnswerController', function($scope, $rootScope, $http, $window, VideoFactory, socketFactory, CurrentQuestionFactory){
     // need a current question service;
+
     $scope.answer = {};
-    $http.get('/questions').then(function(data){
-      $scope.question = data.data[data.data.length-1];
-      console.log("$scope.question loaded: ")
-      console.log($scope.question);
+    $scope.question = null;
+    $scope.show = false;
+    $scope.$watch(function(){return $rootScope.show},function(){
+      $scope.show = $rootScope.show;
     });
+    $scope.$watch(function(){return $rootScope.currentQuestion},function(){
+      $scope.question = $rootScope.currentQuestion;
+    });
+
 
     $scope.send = function(){
       $scope.question.answer = $scope.answer.text;
@@ -64,6 +81,7 @@ angular.module('TeacherClassroomCtrl', [])
         answer: $scope.question.answer,
         answeredBy: {name: $window.localStorage.getItem('com.axiomatic.name')}
       });
+      CurrentQuestionFactory.hide();
     };
 
   })
